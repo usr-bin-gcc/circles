@@ -2,13 +2,15 @@
 
 File        : c.main
 
-Date        : Saturday 6th Februrary 2021
+Date        : Saturday 8th May 2021
 
 Author      : Gavin Cawley
 
 Description : Program to demonstrate RISC_OSLib window redraw mechanism.
 
 History     : 06/02/2021 - v0.01 - started work
+              08/05/2021 - v1.01 - updated to use colourtrans_gcol rather than
+                                   bbc_setgcol
 
 *******************************************************************************/
 
@@ -144,10 +146,16 @@ void gui_redraw(wimp_w handle)
       redraw.x1 = r.g.x1 - r.box.x0 + r.scx;
       redraw.y1 = r.g.y1 - r.box.y1 + r.scy;
 
-      // work out which circles to redraw
-          
-      bbc_gcol(0, 12);
+      // work out which circles to redraw     
 
+      wimp_paletteword entry;
+
+      entry.word = (int)0x0000FF00;     
+         
+      int gcol;
+
+      colourtran_setGCOL(entry, 0, 0, &gcol);
+ 
       for (int i = 0; i < CIRCLES; i++)
       {  
          if (intersects(&circle[i], &redraw))
@@ -168,9 +176,6 @@ void gui_redraw(wimp_w handle)
    }        
 
    // update the monitor window
-                                          
-   //r.w = monitor_handle;
-   //wimpt_complain(wimp_getwindowoutline(&r));
                          
    wimp_wstate monitor_state;
 
@@ -249,6 +254,10 @@ void gui_closeDown(void)
 void monitor_redraw(wimp_w handle)
 {
    BOOL more;
+
+   wimp_paletteword entry;
+
+   int gcol;
  
    wimp_redrawstr r;
 
@@ -267,12 +276,16 @@ void monitor_redraw(wimp_w handle)
 
       for (int i = 0; i < CIRCLES; i++)
       {  
-         bbc_gcol(0, circle[i].redrawn ? 12 : 3);
+         entry.word = circle[i].redrawn ? 0x00FF0000 : 0x0000FF00;     
+
+         colourtran_setGCOL(entry, 0, 0, &gcol);
 
          bbc_circle(x+circle[i].x, y+circle[i].y, circle[i].r);
       }
+         
+      entry.word = 0x00000000;     
 
-      bbc_gcol(0, 0);
+      colourtran_setGCOL(entry, 0, 0, &gcol);
 
       bbc_move(x+redraw.x0, y+redraw.y0);
       bbc_draw(x+redraw.x0, y+redraw.y1);

@@ -2,8 +2,8 @@
 
 
 # Toolflags:
-CCflags = -c -depend !Depend -I<LibSource$Dir> -IRISC_OSLib: -throwback
-C++flags = -c -depend !Depend -I<LibSource$Dir> -IRISC_OSLib: -throwback
+CCflags = -c -depend !Depend -IRISC_OSLib: -throwback
+C++flags = -c -depend !Depend -IRISC_OSLib: -throwback
 Linkflags = -aif -c++ -o $@
 ObjAsmflags = -throwback -NoCache -depend !Depend
 CMHGflags = 
@@ -11,7 +11,7 @@ LibFileflags = -c -o $@
 Squeezeflags = -o $@
 ModSqzflags = -o $@
 
-OBJS = @.o.main <LibSource$Dir>.Lib RISC_OSLib:o.risc_oslib C:o.stubs
+OBJS = @.o.main RISC_OSLib:o.risc_oslib C:o.stubs
 
 # Final targets:
 @.application: $(OBJS)
